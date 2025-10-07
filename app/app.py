@@ -105,13 +105,14 @@ result = pd.DataFrame()
 df = pd.DataFrame()
 
 # --- Flask Application Setup ---
-app = Flask(__name__)
+# RENAMED: 'app' is now 'server_app' to avoid module name collision
+server_app = Flask(__name__)
 
-@app.route('/')
+@server_app.route('/')
 def index():
     return render_template('index.html', languages=Lang, titles=Titles)
 
-@app.route('/about', methods=['POST'])
+@server_app.route('/about', methods=['POST'])
 def getvalue():
     if cosine_sim2 is None:
         # Handle case where data failed to load at startup
@@ -141,7 +142,7 @@ def getvalue():
     
     return render_template('result.html', titles=titles, images=images)
 
-@app.route('/moviepage/<name>')
+@server_app.route('/moviepage/<name>')
 def movie_details(name):
     global df
     
@@ -163,5 +164,5 @@ def movie_details(name):
 
 
 if __name__ == '__main__':
-    # When running locally, the dev server handles static files and templates differently
-    app.run(debug=True)
+    # Run the server_app instead of app
+    server_app.run(debug=True)
