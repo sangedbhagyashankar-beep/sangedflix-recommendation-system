@@ -39,10 +39,8 @@ try:
     # Use os.path.join for path robustness, assuming NetflixDataset.csv is in the same directory
     DATA_PATH = os.path.join(os.path.dirname(__file__), 'NetflixDataset.csv')
     
-    # If the CSV is inside a 'data/' folder, you would change the above line to:
-    # DATA_PATH = os.path.join(os.path.dirname(__file__), 'data', 'NetflixDataset.csv')
-
     if not os.path.exists(DATA_PATH):
+        # NOTE: If your CSV is in a subfolder like 'data/', change the path above accordingly.
         raise FileNotFoundError(f"Data file not found at expected path: {DATA_PATH}")
 
     netflix_data = pd.read_csv(DATA_PATH, encoding='latin-1', index_col='Title')
@@ -106,6 +104,7 @@ df = pd.DataFrame()
 
 # --- Flask Application Setup ---
 # RENAMED: 'app' is now 'server_app' to avoid module name collision
+# This name 'server_app' must match the 'vercel.json' routes destination.
 server_app = Flask(__name__)
 
 @server_app.route('/')
@@ -162,7 +161,4 @@ def movie_details(name):
 
     return render_template('moviepage.html', details=details_list[0])
 
-
-if __name__ == '__main__':
-    # Run the server_app instead of app
-    server_app.run(debug=True)
+# Removed the 'if __name__ == "__main__":' block for Vercel serverless environment
